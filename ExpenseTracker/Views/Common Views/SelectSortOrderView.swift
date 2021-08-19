@@ -17,8 +17,8 @@ struct SelectSortOrderView: View {
     private let sortOrders = SortOrder.allCases
     
     var body: some View {
-        if dynamicType > .extraExtraExtraLarge  {
-            VStack {
+        if dynamicType > .extraExtraLarge  {
+            VStack(spacing: 5) {
                 sortByPicker
                 sortOrderPicker
             }.padding()

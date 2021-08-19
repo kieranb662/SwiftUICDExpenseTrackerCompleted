@@ -64,16 +64,23 @@ struct LogListView: View {
     }
 
     func largeDynamicTypeLayout(log: ExpenseLog) -> some View {
-        HStack(spacing: 0) {
-            VStack(alignment: .leading, spacing: 8) {
-                Text(log.nameText).font(.headline)
-                Text(log.dateText).font(.subheadline)
-            }
-            Spacer()
-            VStack(alignment: .trailing, spacing: 8) {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack() {
                 CategoryImageView(category: log.categoryEnum)
-                Text(log.amountText).font(.headline)
+                Text(log.nameText).font(.headline)
             }
+
+            if dynamicType > .accessibilityLarge {
+                Text(log.amountText).font(.headline)
+                Text(log.dateText).font(.subheadline)
+            } else {
+                HStack(spacing: 0) {
+                    Text(log.dateText).font(.subheadline)
+                    Spacer()
+                    Text(log.amountText).font(.headline)
+                }
+            }
+            
             
         }
         .padding(.vertical, 4)

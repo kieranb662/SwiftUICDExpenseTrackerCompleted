@@ -45,7 +45,7 @@ struct LogFormView: View {
             .padding()
             .border(Color.black)
             
-            if dynamicType > .extraExtraExtraLarge {
+            if dynamicType > .extraLarge {
                 Group {
                     categoryPicker
                     datePicker.labelsHidden()
@@ -64,7 +64,7 @@ struct LogFormView: View {
     
     @ViewBuilder
     var categoryLabel: some View {
-        if dynamicType > .extraExtraExtraLarge  {
+        if dynamicType > .extraLarge  {
             HStack(spacing: 0) {
                 Text("Category:")
                 Spacer()
