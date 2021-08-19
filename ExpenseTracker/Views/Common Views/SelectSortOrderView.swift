@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct SelectSortOrderView: View {
-    
+    @Environment(\.sizeCategory) var dynamicType
     @Binding var sortType: SortType
     @Binding var sortOrder: SortOrder
     
@@ -17,6 +17,22 @@ struct SelectSortOrderView: View {
     private let sortOrders = SortOrder.allCases
     
     var body: some View {
+        if vstackDynamicTypeSizes.contains(dynamicType) {
+            VStack {
+                sortByPicker
+                sortOrderPicker
+            }.padding()
+        } else {
+            HStack {
+                sortByPicker
+                sortOrderPicker
+            }.padding()
+        }
+    }
+    
+    let vstackDynamicTypeSizes: Set<ContentSizeCategory> = [.accessibilityMedium, .accessibilityLarge, .accessibilityExtraExtraExtraLarge, .accessibilityExtraExtraLarge, .accessibilityExtraLarge]
+    
+    var sortByPicker: some View {
         HStack {
             Text("Sort by")
             Picker(selection: $sortType, label: Text("Sort by")) {
@@ -26,6 +42,11 @@ struct SelectSortOrderView: View {
                 }
             }
             .pickerStyle(SegmentedPickerStyle())
+        }
+    }
+    
+    var sortOrderPicker: some View {
+        HStack {
             
             Text("Order by")
             Picker(selection: $sortOrder, label: Text("Order")) {
@@ -36,9 +57,6 @@ struct SelectSortOrderView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
         }
-        .padding(.all)
-        .frame(height: 64)
-        
     }
 }
 

@@ -10,7 +10,7 @@ import SwiftUI
 import CoreData
 
 struct LogListView: View {
-    
+    @Environment(\.sizeCategory) var dynamicType
     @State var logToEdit: ExpenseLog?
     
     @Environment(\.managedObjectContext)
@@ -40,17 +40,11 @@ struct LogListView: View {
                 Button(action: {
                     self.logToEdit = log
                 }) {
-                    HStack(spacing: 16) {
-                        CategoryImageView(category: log.categoryEnum)
-
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text(log.nameText).font(.headline)
-                            Text(log.dateText).font(.subheadline)
-                        }
-                        Spacer()
-                        Text(log.amountText).font(.headline)
+                    if largeDynamicTypeSizes.contains(dynamicType) {
+                        largeDynamicTypeLayout(log: log)
+                    } else {
+                        smallDynamicTypeLayout(log: log)
                     }
-                    .padding(.vertical, 4)
                 }
                 .sheet(item: $logToEdit, onDismiss: {
                     self.logToEdit = nil
@@ -67,6 +61,36 @@ struct LogListView: View {
             }
             .onDelete(perform: onDelete)
         }
+    }
+    
+    let largeDynamicTypeSizes: Set<ContentSizeCategory> = [.accessibilityMedium, .accessibilityLarge, .accessibilityExtraExtraExtraLarge, .accessibilityExtraExtraLarge, .accessibilityExtraLarge]
+    func largeDynamicTypeLayout(log: ExpenseLog) -> some View {
+        HStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 8) {
+                Text(log.nameText).font(.headline)
+                Text(log.dateText).font(.subheadline)
+            }
+            Spacer()
+            VStack(alignment: .trailing, spacing: 8) {
+                CategoryImageView(category: log.categoryEnum)
+                Text(log.amountText).font(.headline)
+            }
+            
+        }
+        .padding(.vertical, 4)
+    }
+    func smallDynamicTypeLayout(log: ExpenseLog) -> some View {
+        HStack(spacing: 16) {
+            CategoryImageView(category: log.categoryEnum)
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text(log.nameText).font(.headline)
+                Text(log.dateText).font(.subheadline)
+            }
+            Spacer()
+            Text(log.amountText).font(.headline)
+        }
+        .padding(.vertical, 4)
     }
     
     private func onDelete(with indexSet: IndexSet) {
