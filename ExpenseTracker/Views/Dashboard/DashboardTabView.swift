@@ -43,9 +43,10 @@ struct DashboardTabView: View {
                 Divider()
 
                 List {
-                    Text("Breakdown").font(.headline)
-                    ForEach(self.categoriesSum!) {
-                        CategoryRowView(category: $0.category, sum: $0.sum)
+                    Section(header: Text("Breakdown").font(.headline)) {
+                        ForEach(self.categoriesSum!) {
+                            CategoryRowView(category: $0.category, sum: $0.sum)
+                        }
                     }
                 }
             }
