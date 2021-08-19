@@ -28,6 +28,9 @@ struct ContentView: View {
                     }
             }
             .tag(1)
+            
+            MonthlySummaryTab()
+                .tabItem { Label("Summary", systemImage: "calendar") }
         }
     }
 }
