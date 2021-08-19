@@ -10,7 +10,7 @@ import SwiftUI
 import CoreData
 
 struct LogFormView: View {
-    
+    @Environment(\.sizeCategory) var dynamicType
     var logToEdit: ExpenseLog?
     var context: NSManagedObjectContext
     
@@ -26,47 +26,72 @@ struct LogFormView: View {
         logToEdit == nil ? "Create Expense Log" : "Edit Expense Log"
     }
     
-    
     var body: some View {
-        NavigationView {
-            VStack(alignment: .leading, spacing: 8) {
-                
-                Group {
-                    TextField("Name", text: $name)
-                        .disableAutocorrection(true)
-                    TextField("Amount", value: $amount, formatter: Utils.numberFormatter)
-                        .keyboardType(.numbersAndPunctuation)
-                }
-                .padding()
-                .border(Color.black)
-                
-                HStack {
-                    
-                    Picker(selection: $category, label: categoryLabel) {
-                        ForEach(Category.allCases) { category in
-                            Text(category.rawValue.capitalized).tag(category)
-                        }
-                    }.pickerStyle(MenuPickerStyle())
-                    
-                    DatePicker(selection: $date, displayedComponents: .date) {
-                        EmptyView()
-                    }.datePickerStyle(CompactDatePickerStyle())
-                }
-                .accentColor(.black)
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Button("Cancel", action: onCancelTapped)
                 Spacer()
+                Button("Save", action: onSaveTapped)
             }
-            .padding(.horizontal)
-            .navigationBarItems(
-                leading: Button(action: self.onCancelTapped) { Text("Cancel")},
-                trailing: Button(action: self.onSaveTapped) { Text("Save")}
-            ).navigationBarTitle(title)
+            
+            Text(title).font(.largeTitle)
+            
+            Group {
+                TextField("Name", text: $name)
+                    .disableAutocorrection(true)
+                TextField("Amount", value: $amount, formatter: Utils.numberFormatter)
+                    .keyboardType(.numbersAndPunctuation)
+            }
+            .padding()
+            .border(Color.black)
+            
+            if Utils.largeDynamicTypeSizes.contains(dynamicType) {
+                Group {
+                    categoryPicker
+                    datePicker.labelsHidden()
+                }.accentColor(.black)
+            } else {
+                HStack {
+                    categoryPicker
+                    datePicker
+                }.accentColor(.black)
+            }
+            
+            Spacer()
+        }
+        .padding()
+    }
+    
+    @ViewBuilder
+    var categoryLabel: some View {
+        if Utils.largeDynamicTypeSizes.contains(dynamicType) {
+            HStack(spacing: 0) {
+                Text("Category:")
+                Spacer()
+                Text(" \(category.rawValue)").foregroundColor(category.color)
+            }
+            .contentShape(Rectangle())
+            .font(Font.subheadline.bold())
+            
+        } else {
+            (Text("Category:") + Text(" \(category.rawValue)").foregroundColor(category.color))
+                .font(Font.subheadline.bold())
+                .fixedSize()
         }
     }
     
-    var categoryLabel: some View {
-        (Text("Category:") + Text(" \(category.rawValue)").foregroundColor(category.color))
-         .font(Font.subheadline.bold())
-         .fixedSize()
+    var categoryPicker: some View {
+        Picker(selection: $category, label: categoryLabel) {
+            ForEach(Category.allCases) { category in
+                Text(category.rawValue.capitalized).tag(category)
+            }
+        }.pickerStyle(MenuPickerStyle())
+    }
+    
+    var datePicker: some View {
+        DatePicker(selection: $date, displayedComponents: .date) {
+            EmptyView()
+        }.datePickerStyle(CompactDatePickerStyle())
     }
     
     private func onCancelTapped() {
