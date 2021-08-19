@@ -29,7 +29,8 @@ struct DashboardTabView: View {
                     Text("Total expenses")
                         .font(.headline)
                     
-                    Text((totalExpenses * (conversionManager.response?.rate ?? 1)).formattedCurrencyText)
+                    Text((totalExpenses * (conversionManager.response?.rate ?? 1))
+                            .formattedCurrencyText(using: conversionManager.currency))
                         .font(.largeTitle)
                     
                     Picker("Currency", selection: $conversionManager.currency) {
@@ -63,7 +64,7 @@ struct DashboardTabView: View {
                 List {
                     Section(header: Text("Breakdown").font(.headline)) {
                         ForEach(categoriesSum) {
-                            CategoryRowView(category: $0.category, sum: $0.sum * (conversionManager.response?.rate ?? 1))
+                            CategoryRowView(currency: conversionManager.currency, category: $0.category, sum: $0.sum * (conversionManager.response?.rate ?? 1))
                         }
                     }
                 }
