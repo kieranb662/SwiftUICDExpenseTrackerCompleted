@@ -34,11 +34,6 @@ struct FilterCategoriesView: View {
     
     func onTap(category: Category) {
         selectedCategories.formSymmetricDifference([category])
-//        if selectedCategories.contains(category) {
-//            selectedCategories.remove(category)
-//        } else {
-//            selectedCategories.insert(category)
-//        }
     }
 }
 
