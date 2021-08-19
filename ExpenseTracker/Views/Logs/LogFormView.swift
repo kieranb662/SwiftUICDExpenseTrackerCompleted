@@ -20,6 +20,12 @@ struct LogFormView: View {
     @State var date: Date = Date()
     @State var notes: String = ""
     
+    @State private var isEditing = false
+    var canEdit: Bool {
+        (isEditing && logToEdit != nil) // We have the expense added.
+            || logToEdit == nil // We are creating a new expense.
+    }
+    
     @Environment(\.presentationMode)
     var presentationMode
     
@@ -29,11 +35,16 @@ struct LogFormView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Button("Cancel", action: onCancelTapped)
-                Spacer()
-                Button("Save", action: onSaveTapped)
+            if canEdit {
+                HStack {
+                    Button("Cancel", action: onCancelTapped)
+                    Spacer()
+                    Button("Save", action: onSaveTapped)
+                }
+            } else {
+                Button("Edit", action: { isEditing = true })
             }
+            
             
             Text(title).font(.largeTitle)
             
@@ -45,23 +56,27 @@ struct LogFormView: View {
             }
             .padding()
             .border(Color.black)
+            .disabled(!canEdit)
             
             if dynamicType > .extraLarge {
                 Group {
                     categoryPicker
                     datePicker.labelsHidden()
                 }.accentColor(.black)
+                .disabled(!canEdit)
             } else {
                 HStack {
                     categoryPicker
                     datePicker
                 }.accentColor(.black)
+                .disabled(!canEdit)
             }
             
             Text("Notes").bold()
             
             TextEditor(text: $notes)
                 .border(Color.black)
+                .disabled(!canEdit)
             
             Spacer()
         }
@@ -101,7 +116,12 @@ struct LogFormView: View {
     }
     
     private func onCancelTapped() {
-        self.presentationMode.wrappedValue.dismiss()
+        if isEditing {
+            isEditing = false
+        } else {
+            self.presentationMode.wrappedValue.dismiss()
+        }
+        
     }
     
     private func onSaveTapped() {
