@@ -17,7 +17,7 @@ struct SelectSortOrderView: View {
     private let sortOrders = SortOrder.allCases
     
     var body: some View {
-        if Utils.largeDynamicTypeSizes.contains(dynamicType) {
+        if dynamicType > .extraExtraExtraLarge  {
             VStack {
                 sortByPicker
                 sortOrderPicker

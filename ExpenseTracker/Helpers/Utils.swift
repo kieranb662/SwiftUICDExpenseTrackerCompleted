@@ -24,6 +24,4 @@ struct Utils {
         return formatter
     }()
     
-    static let largeDynamicTypeSizes: Set<ContentSizeCategory> = [.accessibilityMedium, .accessibilityLarge, .accessibilityExtraExtraExtraLarge, .accessibilityExtraExtraLarge, .accessibilityExtraLarge]
-    
 }

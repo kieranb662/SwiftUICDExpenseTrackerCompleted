@@ -40,7 +40,7 @@ struct LogListView: View {
                 Button(action: {
                     self.logToEdit = log
                 }) {
-                    if Utils.largeDynamicTypeSizes.contains(dynamicType) {
+                    if dynamicType > .extraExtraExtraLarge {
                         largeDynamicTypeLayout(log: log)
                     } else {
                         smallDynamicTypeLayout(log: log)
