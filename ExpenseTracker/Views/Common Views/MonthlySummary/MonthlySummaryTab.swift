@@ -15,8 +15,21 @@ import SwiftUI
 // displayed in order of date.
 
 struct MonthlySummaryTab: View {
+    @State var selection: Set<String> = []
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 80, maximum: 300))], spacing: 8) {
+            ForEach(Calendar.current.monthSymbols, id: \.self) { month in
+                Text(month)
+                    .onTapGesture(perform: { select(month) })
+                    .border(selection.contains(month) ? Color.black : .clear)
+                    .animation(.linear, value: selection)
+            }
+        }
+    }
+    
+    func select(_ month: String) {
+        selection.formSymmetricDifference([month])
     }
 }
 
