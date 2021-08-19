@@ -30,19 +30,18 @@ struct MonthToggleStyle: ToggleStyle {
         func makeBody(configuration: Configuration) -> some View {
             configuration.label
                 .fixedSize(horizontal: true, vertical: false)
-                .padding(4)
+                .padding(configuration.isPressed ? 0 : 4)
                 .overlay(
                     RoundedRectangle(cornerRadius: 3)
                         .stroke(configuration.isPressed ? .clear : Color.black))
                 .animation(.linear, value: configuration.isPressed)
-               
         }
     }
 }
 
 struct MonthPicker: View {
     @Binding var selection: Set<String>
-    @ScaledMetric var minimumWidth: CGFloat = 90
+    @ScaledMetric var minimumWidth: CGFloat = 90 // scales with dynamic type sizes
     
     var body: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400))], spacing: 8) {
@@ -54,13 +53,8 @@ struct MonthPicker: View {
     }
     
     func isOnBinding(for month: String) -> Binding<Bool> {
-        Binding(get: { selection.contains(month) }, set: { isOn in
-            if isOn {
-                selection.insert(month)
-            } else {
-                selection.remove(month)
-            }
-        })
+        Binding(get: { selection.contains(month) },
+                set: { _ in selection.formSymmetricDifference([month]) })
     }
 }
 
