@@ -9,6 +9,10 @@
 import SwiftUI
 import CoreData
 
+enum Currency: Hashable, Equatable {
+    case usd, eur
+}
+
 struct DashboardTabView: View {
     
     @Environment(\.managedObjectContext)
@@ -16,24 +20,38 @@ struct DashboardTabView: View {
     
     @State var totalExpenses: Double?
     @State var categoriesSum: [CategorySum]?
+    @StateObject var conversionManager = CurrencyConversionManager()
     
     var body: some View {
         VStack(spacing: 0) {
             VStack(spacing: 4) {
-                if totalExpenses != nil {
+                if let totalExpenses = totalExpenses {
                     Text("Total expenses")
                         .font(.headline)
-                    if totalExpenses != nil {
-                        Text(totalExpenses!.formattedCurrencyText)
-                            .font(.largeTitle)
+                    
+                    Text((totalExpenses * (conversionManager.response?.rate ?? 1)).formattedCurrencyText)
+                        .font(.largeTitle)
+                    
+                    Picker("Currency", selection: $conversionManager.currency) {
+                        Text("USD").tag(Currency.usd)
+                        Text("EUR").tag(Currency.eur)
+                    }.pickerStyle(SegmentedPickerStyle())
+                    .onChange(of: conversionManager.currency) { (selected) in
+                        switch selected {
+                        case .eur:
+                            conversionManager.fetchConvertedAmount(value: totalExpenses)
+                        case .usd:
+                            conversionManager.response = nil
+                            conversionManager.cancellable = nil 
+                        }
                     }
                 }
             }
             
-            if categoriesSum != nil {
-                if totalExpenses != nil && totalExpenses! > 0 {
+            if let categoriesSum = categoriesSum {
+                if let totalExpenses = totalExpenses, totalExpenses > 0 {
                     PieChartView(
-                        data: categoriesSum!.map { ($0.sum, $0.category.color) },
+                        data: categoriesSum.map { ($0.sum, $0.category.color) },
                         style: Styles.pieChartStyleOne,
                         form: CGSize(width: 300, height: 240),
                         dropShadow: false
@@ -44,8 +62,8 @@ struct DashboardTabView: View {
 
                 List {
                     Section(header: Text("Breakdown").font(.headline)) {
-                        ForEach(self.categoriesSum!) {
-                            CategoryRowView(category: $0.category, sum: $0.sum)
+                        ForEach(categoriesSum) {
+                            CategoryRowView(category: $0.category, sum: $0.sum * (conversionManager.response?.rate ?? 1))
                         }
                     }
                 }
