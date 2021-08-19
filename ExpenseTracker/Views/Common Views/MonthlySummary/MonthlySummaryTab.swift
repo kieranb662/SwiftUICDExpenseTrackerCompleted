@@ -9,6 +9,9 @@ import SwiftUI
 
 struct MonthToggleStyle: ToggleStyle {
     
+    static let BackgroundShape = Capsule()
+//        RoundedRectangle(cornerRadius: 3)
+    
     // Provides behavior for when toggle is On/off.
     func makeBody(configuration: Configuration) -> some View {
         Button(action: {configuration.isOn.toggle()}, label: {
@@ -17,7 +20,7 @@ struct MonthToggleStyle: ToggleStyle {
         .buttonStyle(MonthButtonStyle())
         .foregroundColor(configuration.isOn ? Color.white : nil)
         .background(
-            RoundedRectangle(cornerRadius: 3)
+            MonthToggleStyle.BackgroundShape
                 .foregroundColor(configuration.isOn ? Color.black : .clear)
         )
         .animation(.linear, value: configuration.isOn)
@@ -30,29 +33,35 @@ struct MonthToggleStyle: ToggleStyle {
         func makeBody(configuration: Configuration) -> some View {
             configuration.label
                 .fixedSize(horizontal: true, vertical: false)
-                .padding(configuration.isPressed ? 0 : 4)
+                .padding(configuration.isPressed ? 0 : 8)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 3)
-                        .stroke(configuration.isPressed ? .clear : Color.black))
+                    MonthToggleStyle.BackgroundShape
+                        .strokeBorder(configuration.isPressed ? .clear : Color.black))
                 .animation(.linear, value: configuration.isPressed)
         }
     }
 }
 
 struct MonthPicker: View {
-    @Binding var selection: Set<String>
+    @Binding var selection: Set<Int>
     @ScaledMetric var minimumWidth: CGFloat = 90 // scales with dynamic type sizes
     
     var body: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400))], spacing: 8) {
-            ForEach(Calendar.current.monthSymbols, id: \.self) { month in
-                Toggle(month, isOn: isOnBinding(for: month))
-                .toggleStyle(MonthToggleStyle())
+        VStack(spacing: 0) {
+            Rectangle().frame(height: 1)
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400))], spacing: 8) {
+                ForEach(0...11, id: \.self) { month in
+                    Toggle(Calendar.current.monthSymbols[month], isOn: isOnBinding(for: month))
+                        .toggleStyle(MonthToggleStyle())
+                }
             }
+            .padding(8)
+            .background(Color(white: 0.96))
+            Rectangle().frame(height: 1)
         }
     }
     
-    func isOnBinding(for month: String) -> Binding<Bool> {
+    func isOnBinding(for month: Int) -> Binding<Bool> {
         Binding(get: { selection.contains(month) },
                 set: { _ in selection.formSymmetricDifference([month]) })
     }
@@ -65,14 +74,44 @@ struct MonthPicker: View {
 // select one or multiple months from the screen and the logs for the selected months will be
 // displayed in order of date.
 
+extension ExpenseLog {
+    func dateOccurs(in months: Set<Int>) -> Bool {
+        guard let date = self.date else {
+            return false
+        }
+        
+        return months.contains(Calendar.current.component(.month, from: date)-1)
+    }
+}
+
+struct SummaryExpenseList: View {
+    var selection: Set<Int>
+    
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \ExpenseLog.date, ascending: false)],
+        animation: .default)
+    private var items: FetchedResults<ExpenseLog>
+    
+    var body: some View {
+        List {
+            ForEach(items) { log in
+                if log.dateOccurs(in: selection) {
+                    LogRow(log: log)
+                }
+            }
+        }
+    }
+}
+
 struct MonthlySummaryTab: View {
     @Environment(\.managedObjectContext) var viewContext
-    @State var selection: Set<String> = []
+    @State var selection: Set<Int> = []
     
     var body: some View {
         VStack {
             MonthPicker(selection: $selection)
                 .font(.headline)
+            SummaryExpenseList(selection: selection)
         }
     }
 }
@@ -80,7 +119,5 @@ struct MonthlySummaryTab: View {
 struct MonthlySummaryTab_Previews: PreviewProvider {
     static var previews: some View {
         MonthlySummaryTab()
-//                    .environment(\.sizeCategory, .accessibilityExtraLarge)
-        
     }
 }
