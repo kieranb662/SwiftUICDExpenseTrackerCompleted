@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-extension ExpenseLog: Identifiable {
+extension ExpenseLog {
     
     var categoryEnum: Category {
         Category(rawValue: category ?? "") ?? .other
@@ -81,6 +81,14 @@ extension ExpenseLog: Identifiable {
         } else {
             return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         }
+    }
+    
+    func dateOccurs(in months: Set<Int>) -> Bool {
+        guard let date = self.date else {
+            return false
+        }
+        
+        return months.contains(Calendar.current.component(.month, from: date)-1)
     }
     
 }

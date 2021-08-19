@@ -14,4 +14,12 @@ extension Double {
         return Utils.numberFormatter.string(from: NSNumber(value: self)) ?? "0"
     }
     
+    func formattedCurrencyText(using currency: Currency) -> String {
+        switch currency {
+        case .usd:
+            return formattedCurrencyText
+        case .eur:
+            return "€" + formattedCurrencyText.dropFirst()
+        }
+    }
 }

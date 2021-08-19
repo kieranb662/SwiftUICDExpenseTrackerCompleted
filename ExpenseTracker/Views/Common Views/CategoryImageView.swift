@@ -16,11 +16,13 @@ struct CategoryImageView: View {
         Image(systemName: category.systemNameIcon)
             .resizable()
             .aspectRatio(contentMode: .fit)
-            .frame(width: 20, height: 20)
-            .padding(.all, 8)
+            .padding(.all, 12)
             .foregroundColor(category.color)
-            .background(category.color.opacity(0.1))
-            .cornerRadius(18)
+            .background(
+                Circle()
+                    .fill(category.color.opacity(0.1))
+                )
+            .frame(maxWidth: 50,  maxHeight: 50)
     }
 }
 

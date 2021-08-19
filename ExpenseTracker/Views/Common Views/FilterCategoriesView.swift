@@ -16,28 +16,25 @@ struct FilterCategoriesView: View {
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 16) {
+                
+                Spacer().frame(width: 1)
+                    
                 ForEach(categories) { category in
                     FilterButtonView(
                         category: category,
                         isSelected: self.selectedCategories.contains(category),
                         onTap: self.onTap
                     )
-                        
-                        .padding(.leading, category == self.categories.first ? 16 : 0)
-                        .padding(.trailing, category == self.categories.last ? 16 : 0)
-                    
                 }
+                
+                Spacer().frame(width: 1)
             }
         }
-        .padding(.vertical)
+        .padding(.vertical, 8)
     }
     
     func onTap(category: Category) {
-        if selectedCategories.contains(category) {
-            selectedCategories.remove(category)
-        } else {
-            selectedCategories.insert(category)
-        }
+        selectedCategories.formSymmetricDifference([category])
     }
 }
 
@@ -51,21 +48,13 @@ struct FilterButtonView: View {
         Button(action: {
             self.onTap(self.category)
         }) {
-            HStack(spacing: 8) {
-                Text(category.rawValue.capitalized)
-                    .fixedSize(horizontal: true, vertical: true)
-                
-                if isSelected {
-                    Image(systemName: "xmark.circle.fill")
-                }
-            }
+            Text(category.rawValue.capitalized)
+            .fixedSize(horizontal: true, vertical: true)
             .padding(.vertical, 8)
             .padding(.horizontal, 16)
-                
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
-                    .stroke(isSelected ? category.color : Color(UIColor.lightGray), lineWidth: 1))
-                .frame(height: 44)
+                    .strokeBorder(isSelected ? category.color : Color(UIColor.lightGray), lineWidth: 1))
         }
         .foregroundColor(isSelected ? category.color : Color(UIColor.gray))
     }

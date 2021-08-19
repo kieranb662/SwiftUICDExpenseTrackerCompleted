@@ -31,6 +31,7 @@ struct LogsTabView: View {
                 SelectSortOrderView(sortType: $sortType, sortOrder: $sortOrder)
                 Divider()
                 LogListView(predicate: ExpenseLog.predicate(with: Array(selectedCategories), searchText: searchText), sortDescriptor: ExpenseLogSort(sortType: sortType, sortOrder: sortOrder).sortDescriptor)
+                    .listStyle(PlainListStyle())
             }
             .padding(.bottom, searchBarHeight)
             .sheet(isPresented: $isAddFormPresented) {

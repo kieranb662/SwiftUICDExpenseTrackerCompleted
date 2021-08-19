@@ -10,7 +10,7 @@ import SwiftUI
 import CoreData
 
 struct LogListView: View {
-    
+    @Environment(\.sizeCategory) var dynamicType
     @State var logToEdit: ExpenseLog?
     
     @Environment(\.managedObjectContext)
@@ -40,34 +40,23 @@ struct LogListView: View {
                 Button(action: {
                     self.logToEdit = log
                 }) {
-                    HStack(spacing: 16) {
-                        CategoryImageView(category: log.categoryEnum)
-
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text(log.nameText).font(.headline)
-                            Text(log.dateText).font(.subheadline)
-                        }
-                        Spacer()
-                        Text(log.amountText).font(.headline)
-                    }
-                    .padding(.vertical, 4)
+                    LogRow(log: log)
                 }
-                
+                .sheet(item: $logToEdit, onDismiss: {
+                    self.logToEdit = nil
+                }) { (log: ExpenseLog) in
+                    LogFormView(
+                        logToEdit: log,
+                        context: self.context,
+                        name: log.name ?? "",
+                        amount: log.amount?.doubleValue ?? 0,
+                        category: Category(rawValue: log.category ?? "") ?? .food,
+                        date: log.date ?? Date(),
+                        notes: log.note ?? ""
+                    )
+                }
             }
-               
             .onDelete(perform: onDelete)
-            .sheet(item: $logToEdit, onDismiss: {
-                self.logToEdit = nil
-            }) { (log: ExpenseLog) in
-                LogFormView(
-                    logToEdit: log,
-                    context: self.context,
-                    name: log.name ?? "",
-                    amount: log.amount?.doubleValue ?? 0,
-                    category: Category(rawValue: log.category ?? "") ?? .food,
-                    date: log.date ?? Date()
-                )
-            }
         }
     }
     
