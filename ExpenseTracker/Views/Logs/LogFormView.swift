@@ -29,29 +29,44 @@ struct LogFormView: View {
     
     var body: some View {
         NavigationView {
-            Form {
-                TextField("Name", text: $name)
-                    .disableAutocorrection(true)
-                TextField("Amount", value: $amount, formatter: Utils.numberFormatter)
-                    .keyboardType(.numbersAndPunctuation)
+            VStack(alignment: .leading, spacing: 8) {
+                
+                Group {
+                    TextField("Name", text: $name)
+                        .disableAutocorrection(true)
+                    TextField("Amount", value: $amount, formatter: Utils.numberFormatter)
+                        .keyboardType(.numbersAndPunctuation)
+                }
+                .padding()
+                .border(Color.black)
+                
+                HStack {
                     
-                Picker(selection: $category, label: Text("Category")) {
-                    ForEach(Category.allCases) { category in
-                        Text(category.rawValue.capitalized).tag(category)
-                    }
+                    Picker(selection: $category, label: categoryLabel) {
+                        ForEach(Category.allCases) { category in
+                            Text(category.rawValue.capitalized).tag(category)
+                        }
+                    }.pickerStyle(MenuPickerStyle())
+                    
+                    DatePicker(selection: $date, displayedComponents: .date) {
+                        EmptyView()
+                    }.datePickerStyle(CompactDatePickerStyle())
                 }
-                DatePicker(selection: $date, displayedComponents: .date) {
-                    Text("Date")
-                }
+                .accentColor(.black)
+                Spacer()
             }
-
+            .padding(.horizontal)
             .navigationBarItems(
                 leading: Button(action: self.onCancelTapped) { Text("Cancel")},
                 trailing: Button(action: self.onSaveTapped) { Text("Save")}
             ).navigationBarTitle(title)
-            
         }
-        
+    }
+    
+    var categoryLabel: some View {
+        (Text("Category:") + Text(" \(category.rawValue)").foregroundColor(category.color))
+         .font(Font.subheadline.bold())
+         .fixedSize()
     }
     
     private func onCancelTapped() {
