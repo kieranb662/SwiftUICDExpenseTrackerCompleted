@@ -37,6 +37,7 @@ struct MonthToggleStyle: ToggleStyle {
                 .overlay(
                     MonthToggleStyle.BackgroundShape
                         .strokeBorder(configuration.isPressed ? .clear : Color.black))
+                .padding(configuration.isPressed ? 8 : 0)
                 .animation(.linear, value: configuration.isPressed)
         }
     }
@@ -49,10 +50,12 @@ struct MonthPicker: View {
     var body: some View {
         VStack(spacing: 0) {
             Rectangle().frame(height: 1)
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400))], spacing: 8) {
-                ForEach(0...11, id: \.self) { month in
-                    Toggle(Calendar.current.monthSymbols[month], isOn: isOnBinding(for: month))
-                        .toggleStyle(MonthToggleStyle())
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack {
+                    ForEach(0...11, id: \.self) { month in
+                        Toggle(Calendar.current.monthSymbols[month], isOn: isOnBinding(for: month))
+                            .toggleStyle(MonthToggleStyle())
+                    }
                 }
             }
             .padding(8)
