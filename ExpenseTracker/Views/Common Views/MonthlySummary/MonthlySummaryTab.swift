@@ -7,6 +7,63 @@
 
 import SwiftUI
 
+struct MonthToggleStyle: ToggleStyle {
+    
+    // Provides behavior for when toggle is On/off.
+    func makeBody(configuration: Configuration) -> some View {
+        Button(action: {configuration.isOn.toggle()}, label: {
+            configuration.label
+        })
+        .buttonStyle(MonthButtonStyle())
+        .foregroundColor(configuration.isOn ? Color.white : nil)
+        .background(
+            RoundedRectangle(cornerRadius: 3)
+                .foregroundColor(configuration.isOn ? Color.black : .clear)
+        )
+        .animation(.linear, value: configuration.isOn)
+    }
+    
+    // Encapsulated because only used inside toggle
+    // Provides behavior for when toggle is pressed
+    struct MonthButtonStyle: ButtonStyle {
+        
+        func makeBody(configuration: Configuration) -> some View {
+            configuration.label
+                .fixedSize(horizontal: true, vertical: false)
+                .padding(4)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 3)
+                        .stroke(configuration.isPressed ? .clear : Color.black))
+                .animation(.linear, value: configuration.isPressed)
+               
+        }
+    }
+}
+
+struct MonthPicker: View {
+    @Binding var selection: Set<String>
+    @ScaledMetric var minimumWidth: CGFloat = 90
+    
+    var body: some View {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumWidth, maximum: 400))], spacing: 8) {
+            ForEach(Calendar.current.monthSymbols, id: \.self) { month in
+                Toggle(month, isOn: isOnBinding(for: month))
+                .toggleStyle(MonthToggleStyle())
+            }
+        }
+    }
+    
+    func isOnBinding(for month: String) -> Binding<Bool> {
+        Binding(get: { selection.contains(month) }, set: { isOn in
+            if isOn {
+                selection.insert(month)
+            } else {
+                selection.remove(month)
+            }
+        })
+    }
+}
+
 // Create a new view for “monthly summary”, the user can access the view from the bottom submenu
 // (add a third icon to the submenu).
 
@@ -15,26 +72,21 @@ import SwiftUI
 // displayed in order of date.
 
 struct MonthlySummaryTab: View {
+    @Environment(\.managedObjectContext) var viewContext
     @State var selection: Set<String> = []
     
     var body: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 80, maximum: 300))], spacing: 8) {
-            ForEach(Calendar.current.monthSymbols, id: \.self) { month in
-                Text(month)
-                    .onTapGesture(perform: { select(month) })
-                    .border(selection.contains(month) ? Color.black : .clear)
-                    .animation(.linear, value: selection)
-            }
+        VStack {
+            MonthPicker(selection: $selection)
+                .font(.headline)
         }
-    }
-    
-    func select(_ month: String) {
-        selection.formSymmetricDifference([month])
     }
 }
 
 struct MonthlySummaryTab_Previews: PreviewProvider {
     static var previews: some View {
         MonthlySummaryTab()
+//                    .environment(\.sizeCategory, .accessibilityExtraLarge)
+        
     }
 }
