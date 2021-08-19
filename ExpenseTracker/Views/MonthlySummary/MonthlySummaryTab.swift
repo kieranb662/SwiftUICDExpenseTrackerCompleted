@@ -66,6 +66,7 @@ struct MonthPicker: View {
     func isOnBinding(for month: Int) -> Binding<Bool> {
         Binding(get: { selection.contains(month) },
                 set: { _ in selection.formSymmetricDifference([month]) })
+            .animation(.easeIn)
     }
 }
 
@@ -100,7 +101,9 @@ struct MonthlySummaryTab: View {
     @State var selection: Set<Int> = []
     
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
+            Text("Month Summary")
+                .font(.title)
             MonthPicker(selection: $selection)
                 .font(.headline)
             SummaryExpenseList(selection: selection)
