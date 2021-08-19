@@ -40,11 +40,7 @@ struct LogListView: View {
                 Button(action: {
                     self.logToEdit = log
                 }) {
-                    if dynamicType > .extraExtraExtraLarge {
-                        largeDynamicTypeLayout(log: log)
-                    } else {
-                        smallDynamicTypeLayout(log: log)
-                    }
+                    LogRow(log: log)
                 }
                 .sheet(item: $logToEdit, onDismiss: {
                     self.logToEdit = nil
@@ -62,41 +58,6 @@ struct LogListView: View {
             }
             .onDelete(perform: onDelete)
         }
-    }
-
-    func largeDynamicTypeLayout(log: ExpenseLog) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack() {
-                CategoryImageView(category: log.categoryEnum)
-                Text(log.nameText).font(.headline)
-            }
-
-            if dynamicType > .accessibilityLarge {
-                Text(log.amountText).font(.headline)
-                Text(log.dateText).font(.subheadline)
-            } else {
-                HStack(spacing: 0) {
-                    Text(log.dateText).font(.subheadline)
-                    Spacer()
-                    Text(log.amountText).font(.headline)
-                }
-            }
-        }
-        .padding(.vertical, 4)
-    }
-    
-    func smallDynamicTypeLayout(log: ExpenseLog) -> some View {
-        HStack(spacing: 16) {
-            CategoryImageView(category: log.categoryEnum)
-
-            VStack(alignment: .leading, spacing: 8) {
-                Text(log.nameText).font(.headline)
-                Text(log.dateText).font(.subheadline)
-            }
-            Spacer()
-            Text(log.amountText).font(.headline)
-        }
-        .padding(.vertical, 4)
     }
     
     private func onDelete(with indexSet: IndexSet) {
