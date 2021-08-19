@@ -17,7 +17,7 @@ struct SelectSortOrderView: View {
     private let sortOrders = SortOrder.allCases
     
     var body: some View {
-        if vstackDynamicTypeSizes.contains(dynamicType) {
+        if Utils.largeDynamicTypeSizes.contains(dynamicType) {
             VStack {
                 sortByPicker
                 sortOrderPicker
@@ -29,8 +29,6 @@ struct SelectSortOrderView: View {
             }.padding()
         }
     }
-    
-    let vstackDynamicTypeSizes: Set<ContentSizeCategory> = [.accessibilityMedium, .accessibilityLarge, .accessibilityExtraExtraExtraLarge, .accessibilityExtraExtraLarge, .accessibilityExtraLarge]
     
     var sortByPicker: some View {
         HStack {

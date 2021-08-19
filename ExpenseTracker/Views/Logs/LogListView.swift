@@ -40,7 +40,7 @@ struct LogListView: View {
                 Button(action: {
                     self.logToEdit = log
                 }) {
-                    if largeDynamicTypeSizes.contains(dynamicType) {
+                    if Utils.largeDynamicTypeSizes.contains(dynamicType) {
                         largeDynamicTypeLayout(log: log)
                     } else {
                         smallDynamicTypeLayout(log: log)
@@ -62,8 +62,7 @@ struct LogListView: View {
             .onDelete(perform: onDelete)
         }
     }
-    
-    let largeDynamicTypeSizes: Set<ContentSizeCategory> = [.accessibilityMedium, .accessibilityLarge, .accessibilityExtraExtraExtraLarge, .accessibilityExtraExtraLarge, .accessibilityExtraLarge]
+
     func largeDynamicTypeLayout(log: ExpenseLog) -> some View {
         HStack(spacing: 0) {
             VStack(alignment: .leading, spacing: 8) {

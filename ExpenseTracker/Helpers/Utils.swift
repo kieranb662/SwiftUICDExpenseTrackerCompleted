@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct Utils {
     
@@ -22,5 +23,7 @@ struct Utils {
         formatter.numberStyle = .currency
         return formatter
     }()
+    
+    static let largeDynamicTypeSizes: Set<ContentSizeCategory> = [.accessibilityMedium, .accessibilityLarge, .accessibilityExtraExtraExtraLarge, .accessibilityExtraExtraLarge, .accessibilityExtraLarge]
     
 }
