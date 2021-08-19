@@ -18,6 +18,7 @@ struct LogFormView: View {
     @State var amount: Double = 0
     @State var category: Category = .utilities
     @State var date: Date = Date()
+    @State var notes: String = ""
     
     @Environment(\.presentationMode)
     var presentationMode
@@ -56,6 +57,11 @@ struct LogFormView: View {
                     datePicker
                 }.accentColor(.black)
             }
+            
+            Text("Notes").bold()
+            
+            TextEditor(text: $notes)
+                .border(Color.black)
             
             Spacer()
         }
@@ -113,6 +119,7 @@ struct LogFormView: View {
         log.category = self.category.rawValue
         log.amount = NSDecimalNumber(value: self.amount)
         log.date = self.date
+        log.note = notes
         
         do {
             try context.save()
