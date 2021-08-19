@@ -76,16 +76,6 @@ struct MonthPicker: View {
 // select one or multiple months from the screen and the logs for the selected months will be
 // displayed in order of date.
 
-extension ExpenseLog {
-    func dateOccurs(in months: Set<Int>) -> Bool {
-        guard let date = self.date else {
-            return false
-        }
-        
-        return months.contains(Calendar.current.component(.month, from: date)-1)
-    }
-}
-
 struct SummaryExpenseList: View {
     var selection: Set<Int>
     

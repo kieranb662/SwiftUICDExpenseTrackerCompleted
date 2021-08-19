@@ -83,5 +83,13 @@ extension ExpenseLog {
         }
     }
     
+    func dateOccurs(in months: Set<Int>) -> Bool {
+        guard let date = self.date else {
+            return false
+        }
+        
+        return months.contains(Calendar.current.component(.month, from: date)-1)
+    }
+    
 }
 
