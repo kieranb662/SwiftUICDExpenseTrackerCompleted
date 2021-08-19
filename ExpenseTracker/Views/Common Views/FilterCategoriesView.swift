@@ -29,15 +29,16 @@ struct FilterCategoriesView: View {
                 }
             }
         }
-        .padding(.vertical)
+        .padding(.vertical, 8)
     }
     
     func onTap(category: Category) {
-        if selectedCategories.contains(category) {
-            selectedCategories.remove(category)
-        } else {
-            selectedCategories.insert(category)
-        }
+        selectedCategories.formSymmetricDifference([category])
+//        if selectedCategories.contains(category) {
+//            selectedCategories.remove(category)
+//        } else {
+//            selectedCategories.insert(category)
+//        }
     }
 }
 
@@ -57,8 +58,7 @@ struct FilterButtonView: View {
             .padding(.horizontal, 16)
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
-                    .stroke(isSelected ? category.color : Color(UIColor.lightGray), lineWidth: 1))
-                .frame(height: 44)
+                    .strokeBorder(isSelected ? category.color : Color(UIColor.lightGray), lineWidth: 1))
         }
         .foregroundColor(isSelected ? category.color : Color(UIColor.gray))
     }
