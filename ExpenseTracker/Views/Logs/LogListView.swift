@@ -52,22 +52,20 @@ struct LogListView: View {
                     }
                     .padding(.vertical, 4)
                 }
-                
+                .sheet(item: $logToEdit, onDismiss: {
+                    self.logToEdit = nil
+                }) { (log: ExpenseLog) in
+                    LogFormView(
+                        logToEdit: log,
+                        context: self.context,
+                        name: log.name ?? "",
+                        amount: log.amount?.doubleValue ?? 0,
+                        category: Category(rawValue: log.category ?? "") ?? .food,
+                        date: log.date ?? Date()
+                    )
+                }
             }
-               
             .onDelete(perform: onDelete)
-            .sheet(item: $logToEdit, onDismiss: {
-                self.logToEdit = nil
-            }) { (log: ExpenseLog) in
-                LogFormView(
-                    logToEdit: log,
-                    context: self.context,
-                    name: log.name ?? "",
-                    amount: log.amount?.doubleValue ?? 0,
-                    category: Category(rawValue: log.category ?? "") ?? .food,
-                    date: log.date ?? Date()
-                )
-            }
         }
     }
     
