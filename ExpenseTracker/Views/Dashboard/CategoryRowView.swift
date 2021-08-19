@@ -9,16 +9,30 @@
 import SwiftUI
 
 struct CategoryRowView: View {
+    @Environment(\.sizeCategory) var dynamicType
     let category: Category
     let sum: Double
     
     var body: some View {
-        HStack {
-            CategoryImageView(category: category)
-            Text(category.rawValue.capitalized)
-            Spacer()
-            Text(sum.formattedCurrencyText).font(.headline)
+        if dynamicType > .accessibilityMedium {
+            VStack(alignment: .leading, spacing: 5) {
+                HStack {
+                    CategoryImageView(category: category)
+                    Text(category.rawValue.capitalized)
+                }
+                
+                Text(sum.formattedCurrencyText).font(.headline)
+            }
+            
+        } else {
+            HStack {
+                CategoryImageView(category: category)
+                Text(category.rawValue.capitalized)
+                Spacer()
+                Text(sum.formattedCurrencyText).font(.headline)
+            }
         }
+        
     }
 }
 
