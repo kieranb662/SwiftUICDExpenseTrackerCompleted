@@ -25,9 +25,8 @@ class CurrencyConversionManager: ObservableObject {
     @Published var response: CurrencyConversionResponse?
     @Published var currency: Currency = .usd
     @Published var fetchErrorToDisplay: DisplayableError?
-    let logger = Logger(subsystem: "com.devteam.currency", category: "Currency")
-    
     var cancellable: AnyCancellable?
+    let logger = Logger(subsystem: "com.devteam.currency", category: "Currency")
     
     func fetchConvertedAmount(value: Double) {
         guard let requestUrl = Self.endpointURL else { fatalError() }
