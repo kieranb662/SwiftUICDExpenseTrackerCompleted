@@ -16,17 +16,18 @@ struct FilterCategoriesView: View {
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 16) {
+                
+                Spacer().frame(width: 1)
+                    
                 ForEach(categories) { category in
                     FilterButtonView(
                         category: category,
                         isSelected: self.selectedCategories.contains(category),
                         onTap: self.onTap
                     )
-                        
-                        .padding(.leading, category == self.categories.first ? 16 : 0)
-                        .padding(.trailing, category == self.categories.last ? 16 : 0)
-                    
                 }
+                
+                Spacer().frame(width: 1)
             }
         }
         .padding(.vertical, 8)
