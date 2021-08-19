@@ -51,17 +51,10 @@ struct FilterButtonView: View {
         Button(action: {
             self.onTap(self.category)
         }) {
-            HStack(spacing: 8) {
-                Text(category.rawValue.capitalized)
-                    .fixedSize(horizontal: true, vertical: true)
-                
-                if isSelected {
-                    Image(systemName: "xmark.circle.fill")
-                }
-            }
+            Text(category.rawValue.capitalized)
+            .fixedSize(horizontal: true, vertical: true)
             .padding(.vertical, 8)
             .padding(.horizontal, 16)
-                
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
                     .stroke(isSelected ? category.color : Color(UIColor.lightGray), lineWidth: 1))
