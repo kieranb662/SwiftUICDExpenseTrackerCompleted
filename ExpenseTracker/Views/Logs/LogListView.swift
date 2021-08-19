@@ -80,11 +80,10 @@ struct LogListView: View {
                     Text(log.amountText).font(.headline)
                 }
             }
-            
-            
         }
         .padding(.vertical, 4)
     }
+    
     func smallDynamicTypeLayout(log: ExpenseLog) -> some View {
         HStack(spacing: 16) {
             CategoryImageView(category: log.categoryEnum)
