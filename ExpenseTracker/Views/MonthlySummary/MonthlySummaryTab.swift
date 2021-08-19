@@ -10,8 +10,7 @@ import SwiftUI
 struct MonthToggleStyle: ToggleStyle {
     
     static let BackgroundShape = Capsule()
-//        RoundedRectangle(cornerRadius: 3)
-    
+
     // Provides behavior for when toggle is On/off.
     func makeBody(configuration: Configuration) -> some View {
         Button(action: {configuration.isOn.toggle()}, label: {
