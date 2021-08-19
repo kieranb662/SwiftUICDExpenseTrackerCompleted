@@ -78,6 +78,9 @@ struct DashboardTabView: View {
         }
         .padding(.top)
         .onAppear(perform: fetchTotalSums)
+        .alert(item: $conversionManager.fetchErrorToDisplay) { (error) in
+            Alert(title: Text(error.title), message: Text(error.message))
+        }
     }
     
     func fetchTotalSums() {
