@@ -104,6 +104,7 @@ struct MonthlySummaryTab: View {
         VStack(alignment: .leading) {
             Text("Month Summary")
                 .font(.title)
+                .padding(.horizontal)
             MonthPicker(selection: $selection)
                 .font(.headline)
             SummaryExpenseList(selection: selection)
